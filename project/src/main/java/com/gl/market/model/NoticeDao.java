@@ -24,7 +24,9 @@ public interface NoticeDao {
 	
 	BuyVo buypro(String proid);
 	List<ProdetailVo> buypro2(String proid2);
-	
+	List<CouponVo> coupon(String id);
+	int leaveTk(HashMap<String, String> map);
+	int searchtk(HashMap<String, String> map);
 	
 	
 	

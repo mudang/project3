@@ -1,13 +1,21 @@
 package com.gl.market.Controller;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.List;
 
 
 
 
+
+
+
+
+
 import javax.print.attribute.Size2DSyntax;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.ibatis.session.SqlSession;
@@ -21,7 +29,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 
 
+
+
+
+
+
+import com.gl.market.model.CouponVo;
 import com.gl.market.model.NoticeDao;
+import com.gl.market.model.OderVO;
 import com.gl.market.model.ProdetailVo;
 import com.gl.market.model.VocVo;
 
@@ -101,7 +116,7 @@ public class NoticeController {
 	
 	@RequestMapping("voc/list")
 	public String vocWrite(@RequestParam("title") String voctitle,@RequestParam
-			("content") String voccontent, Model model, HttpServletRequest req){
+			("content") String voccontent, HttpServletRequest req){
 		System.out.println(voctitle);
 		System.out.println(voccontent);
 		session = req.getSession();
@@ -120,12 +135,45 @@ public class NoticeController {
 		String id = (String) session.getAttribute("id");
 		String proid = "KR力林B5Q3";
 		String proid2 ="KR力林B5Q3";
+		String eq ="KR力林B5Q3";
 		NoticeDao mapper = sqlSession.getMapper(NoticeDao.class);
 		model.addAttribute("buypro", mapper.buypro(proid));
 		List<ProdetailVo> list = mapper.buypro2(proid2);
 		model.addAttribute("buypro2", list);
+		List<CouponVo> coupon = mapper.coupon(id);
+		model.addAttribute("coupon", coupon);
 		return "notice/buy";
 	}
+	@RequestMapping("ticket/")
+	public void ticket(@RequestParam("maxp")int maxp,@RequestParam("proid")String proid
+			,@RequestParam("startday")String startday,@RequestParam("air")String air, HttpServletResponse resp){
+		HashMap<String,String> map=new HashMap<String,String>();
+		map.put("proid", proid);
+		map.put("startday", startday);
+		map.put("air", air);
+		NoticeDao mapper = sqlSession.getMapper(NoticeDao.class);
+		System.out.println();
+		PrintWriter out=null;
+			try {
+				out = resp.getWriter();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		int cnt1 = mapper.leaveTk(map);
+		if(cnt1==0){
+			out.print(maxp);
+		}else{
+			int cnt2 = mapper.searchtk(map);
+			System.out.println(cnt2);
+			int tot= maxp-cnt2;
+			out.print(tot);
+		}
+	}
+	@RequestMapping("buy/complete/")
+	public String complete(OderVO vo){
 		
-	
+		
+		return "notice/buysuccess";
+	}
 }

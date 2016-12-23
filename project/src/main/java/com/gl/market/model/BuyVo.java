@@ -13,7 +13,7 @@ public class BuyVo {
 	private String exp;
 	private String img;
 	private String thumb;
-	private int discount;
+	private Double discount;
 	private int point;
 	private int prio;
 	private int event;
@@ -87,10 +87,10 @@ public class BuyVo {
 	public void setThumb(String thumb) {
 		this.thumb = thumb;
 	}
-	public int getDiscount() {
+	public Double getDiscount() {
 		return discount;
 	}
-	public void setDiscount(int discount) {
+	public void setDiscount(Double discount) {
 		this.discount = discount;
 	}
 	public int getPoint() {
@@ -122,7 +122,7 @@ public class BuyVo {
 	}
 	public BuyVo(String proid, String proname, String cat, String loc,
 			int price, int minp, int maxp, String peris, String exp,
-			String img, String thumb, int discount, int point, int prio,
+			String img, String thumb, Double discount, int point, int prio,
 			int event) {
 		super();
 		this.proid = proid;

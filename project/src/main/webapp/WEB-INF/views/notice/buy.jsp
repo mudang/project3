@@ -11,7 +11,62 @@
 <title>Insert title here</title>
 <!-- jQuery (부트스트랩의 자바스크립트 플러그인을 위해 필요합니다) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-    
+    <script type="text/javascript">
+    	$(document).ready(function() {
+    		$('#person').hide();
+    		$('#start').change(function() {
+    			var start = $('#start').val().split("&");
+    			$.ajax({
+    				 type:"GET",
+    				 url:"../ticket/",
+    				 dataType:"JSON",
+    				 data:{
+    					 "maxp":'${buypro.maxp  }',
+    					 "proid":'${buypro.proid }',
+    					 "startday":start[0],
+    					 "air":start[1]
+    				 },
+    				 'error':function(jqXHR,textStatus,errorThrown){
+    					 alert("통신실패"+textStatus+"(code:)"+jqXHR.status+
+    							 "(errorThrown):"+errorThrown);
+    				 },
+    				 'success':function(data){
+    					 var msg=(data);
+    					$('#tot').text(msg);
+    				 }
+    				 
+    			});
+    			$('#person').show();
+			});
+    		$(document).ready(function(){
+    			$('#payment').click(function() {
+    				var tot = $('#tot').text();
+    				tot*=1;
+    				if(tot>=$('#num').val()){
+    				window.location.replace("./complete/")
+    				}else{
+    					alert("당일 여행 가능인원이 초과하였습니다.");
+    					return false;
+    				}
+    			});
+    		});
+    		
+			$('#num').focusout(function() {
+				$('#sp_num').text($('#num').val());
+				total();
+			});
+		});
+    	
+    	function total() {
+    		var dis = '${buypro.price }'-('${buypro.price }'*'${buypro.discount }');
+    		var pop = dis*$('#num').val();
+    		var tot = pop-(pop*($('#coupon').val()/100));
+    		$('#total').text(tot);
+		}
+    		
+    		
+    	
+    </script>
 </head>
 <body>
 <table>
@@ -27,6 +82,7 @@
 <tr><td>상품이미지=<img src="../file/${buypro.thumb }"> </td></tr>
 <tr><td>할인율=${buypro.discount }</td></tr>
 <tr><td>설명=${buypro.exp  }</td></tr>
+<tr><td>총티켓=${buypro.maxp  }</td></tr>
 </table>
 
 <br/>
@@ -34,15 +90,40 @@
 
 <tr>
 	<td>
-	<select>
+	출발일
+	<select id="start">
 		<c:forEach items="${buypro2 }" var="buypro2">
-		<option value="">
-		출발일=${buypro2.startday },
+		<option value="${buypro2.startday }&${buypro2.trans }">
+		${buypro2.startday },  
 		항공편=${buypro2.trans }
 		</option>
 		</c:forEach>
-	</select>	
+	</select>
+	<div id="person">신청가능 인원:<span id="tot"></span></div>	
 	</td>
+</tr>
+<tr>
+	<td>여행 인원수 <input type="text" id="num">명 </td>
+</tr>
+<tr>
+	<td>보유 쿠폰
+		<select id="coupon">
+		<c:forEach items="${coupon }" var="coup">
+			<option value="${coup.percent }">
+				${coup.cupname }, ${coup.percent }%
+			</option>
+		</c:forEach>
+		</select>
+	</td>
+</tr>
+<tr>
+<td>
+	결재 금액 = ${buypro.price }-(${buypro.price }*${buypro.discount })*<span id="sp_num"></span>
+	=<span id="total"></span>
+</td>
+</tr>
+<tr>
+	<td><input id="payment" type="button" value="결재하기"></td>
 </tr>
 </table>
 

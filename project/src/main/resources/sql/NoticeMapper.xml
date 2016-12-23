@@ -44,6 +44,16 @@
   	<select id="buypro2" parameterType="String" resultType="com.gl.market.model.ProdetailVo">
   		SELECT * FROM PRODETAIL WHERE PROID=#{value}  	
   	</select>
+    <select id="coupon" parameterType="String" resultType="com.gl.market.model.CouponVo">
+    	SELECT * FROM COUPON WHERE CUSTOMID=#{value}
+    </select>
+
+	<select id="leaveTk" parameterType="hashmap" resultType="int">
+	SELECT COUNT(*) FROM ODER WHERE STARTDAY=#{startday} AND TRANS=#{air} AND PROID=#{proid}
+	</select>    
+	<select id="searchtk" parameterType="hashmap" resultType="int">
+	SELECT SUM(GOPERSON) FROM ODER WHERE STARTDAY=#{startday} AND TRANS=#{air} AND PROID=#{proid}
+	</select>    
     
   </mapper>
   
